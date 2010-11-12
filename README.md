@@ -35,4 +35,8 @@ results in an output of
 	number(56.0)
 	right_parenthesis())
 	
+if you added a % in there somewhere, you'd get a Lexr::UnmatchableTextError with a message like this:
+
+	=> Unexpected character '%' at position 5
+	
 and that pretty is every feature so far. Please let me know of any bugs or additions that you'd like to see!
