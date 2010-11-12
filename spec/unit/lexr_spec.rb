@@ -6,9 +6,15 @@ describe "Creating an instance" do
 		subject.instance_eval do
 			@text.should == "test"
 			@position.should == 0
+			@current.should == nil
 			@rules.should == [123]
 		end
   end
+
+	it "should not be at the end" do
+		subject = Lexr.new("test", [123])
+		subject.end?.should be_false
+	end
 end
 
 describe "Getting the next token" do
@@ -16,11 +22,15 @@ describe "Getting the next token" do
 		subject = Lexr.new("abc", [])
 		subject.instance_eval { @position = 3 }
 		subject.next.should == Lexr::Token.end
+		subject.current.should == Lexr::Token.end
+		subject.end?.should be_true
 	end
 	
 	it "should advance the string and return the correct token for a matching literal" do
 		subject = Lexr.new("ab", [Lexr::Rule.new("a", :an_a)])
 		subject.next.should == Lexr::Token.an_a("a")
+		subject.current.should == Lexr::Token.an_a("a")
+		subject.end?.should be_false
 		subject.send(:unprocessed_text).should == "b"
 	end
 	
@@ -33,6 +43,8 @@ describe "Getting the next token" do
 	it "should use the conversion block to convert a string result into another type" do
 		subject = Lexr.new("ab", [Lexr::Rule.new(/[a-z]/, :a_letter, :convert_with => lambda {123})])
 		subject.next.should == Lexr::Token.a_letter(123)
+		subject.current.should == Lexr::Token.a_letter(123)
+		subject.end?.should be_false
 	end
 	
 	it "should match and advance but not return the token (should return the next token after it) when using ignore" do

@@ -24,8 +24,8 @@ Install with
 
 	lexer = ExpressionLexer.new("1 * 12.5 / (55 + 2 - 56)")
 
-	while (token = lexer.next) != Lexr::Token.end
-		puts token
+	until lexer.end?
+		puts lexer.next
 	end
 
 results in an output of
@@ -41,6 +41,7 @@ results in an output of
 	subtraction(-)
 	number(56.0)
 	right_parenthesis())
+	end()
 	
 if you added a % in there somewhere, you'd get a Lexr::UnmatchableTextError with a message like this:
 

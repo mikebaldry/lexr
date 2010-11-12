@@ -7,19 +7,28 @@ class Lexr
 	
 	def initialize(text, rules)
 		@text, @rules = text, rules
+		@current = nil
 		@position = 0
 	end
 
 	def next
-		return Lexr::Token.end if @position >= @text.length
+		return @current = Lexr::Token.end if @position >= @text.length
 		@rules.each do |rule|
 			if result = rule.pattern.instance_of?(Regexp) ? regexp_match(rule.pattern) : literal_match(rule.pattern)
 				result = rule.converter[result] if rule.converter
 				return self.send(:next) if rule.ignore?
-				return Lexr::Token.new(result, rule.symbol)
+				return @current = Lexr::Token.new(result, rule.symbol)
 			end
 		end
 		raise Lexr::UnmatchableTextError.new(unprocessed_text[0..0], @position)
+	end
+	
+	def current
+		@current
+	end
+	
+	def end?
+		@current == Lexr::Token.end
 	end
 	
 	private
