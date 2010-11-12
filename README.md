@@ -2,6 +2,10 @@
 
 Lexr is a lightweight lexical analyser written in ruby, it has no dependencies, has good test coverage, looks pretty and reads well.
 
+Install with
+
+	gem install lexr
+
 # An example: Expressions
 
 	require 'rubygems'
