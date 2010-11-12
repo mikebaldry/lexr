@@ -4,6 +4,9 @@ Lexr is a lightweight lexical analyser written in ruby, it has no dependencies, 
 
 # An example: Expressions
 
+	require 'rubygems'
+	require 'lexr'
+
 	ExpressionLexer = Lexr.that {
 		ignores /\s+/ => :whitespace
 		matches /[-+]?[0-9]*\.?[0-9]+/ => :number, :convert_with => lambda { |v| Float(v) }
