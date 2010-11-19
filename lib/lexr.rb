@@ -11,16 +11,22 @@ class Lexr
 		@position = 0
 	end
 
-	def next
+	def next(peeking = false)
 		return @current = Lexr::Token.end if @position >= @text.length
 		@rules.each do |rule|
-			if result = rule.pattern.instance_of?(Regexp) ? regexp_match(rule.pattern) : literal_match(rule.pattern)
+			if result = rule.pattern.instance_of?(Regexp) ? regexp_match(rule.pattern, peeking) : literal_match(rule.pattern, peeking)
 				result = rule.converter[result] if rule.converter
 				return self.send(:next) if rule.ignore?
-				return @current = Lexr::Token.new(result, rule.symbol)
+				token = Lexr::Token.new(result, rule.symbol)
+				return @current = token unless peeking
+				return token
 			end
 		end
 		raise Lexr::UnmatchableTextError.new(unprocessed_text[0..0], @position)
+	end
+	
+	def peek
+		self.send(:next, true)
 	end
 	
 	def current
@@ -37,15 +43,15 @@ class Lexr
 		@text[@position..-1]
 	end
 	
-	def regexp_match(regex)
+	def regexp_match(regex, peeking = false)
 		return nil unless m = unprocessed_text.match(/^#{regex}/)
-		@position += m.end(0)
+		@position += m.end(0) unless peeking
 		m[0]
 	end
 	
-	def literal_match(lit)
+	def literal_match(lit, peeking = false)
 		return nil unless unprocessed_text[0..lit.length-1] == lit
-		@position += lit.length
+		@position += lit.length unless peeking
 		lit
 	end
 	

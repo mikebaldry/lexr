@@ -17,6 +17,23 @@ describe "Creating an instance" do
 	end
 end
 
+describe "Peeking the next token" do
+	it "should return the next token but not advance the string" do
+		subject = Lexr.new("abcd", [Lexr::Rule.new(/[a-z]/, :a_letter)])
+		subject.peek.value.should == "a"
+		subject.peek.value.should == "a"
+		subject.next.value.should == "a"
+		subject.next.value.should == "b"
+	end
+	
+	it "should not change the current token" do
+		subject = Lexr.new("abcd", [Lexr::Rule.new(/[a-z]/, :a_letter)])
+		subject.current.should == nil
+		subject.peek.value.should == "a"
+		subject.current.should == nil
+	end
+end
+
 describe "Getting the next token" do
 	it "should return :end token when all tokens are read" do
 		subject = Lexr.new("abc", [])
