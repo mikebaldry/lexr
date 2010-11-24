@@ -32,6 +32,15 @@ describe "Peeking the next token" do
 		subject.peek.value.should == "a"
 		subject.current.should == nil
 	end
+	
+	it "should still peek if we come to an ignored token (bug fix)" do
+	  subject = Lexr.new("a-b-c", [Lexr::Rule.new("-", :ignore_me, :ignore => true),  Lexr::Rule.new(/[a-z]/, :a_letter)])
+	  
+	  subject.peek.value.should == "a"
+	  subject.next.value.should == "a"
+	  subject.peek.value.should == "b"
+	  subject.current.value.should == "a"
+  end
 end
 
 describe "Getting the next token" do
