@@ -21,7 +21,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "lexr"
-  s.version           = "0.1.0"
+  s.version           = "0.2.1"
   s.summary           = "A lightweight and pretty lexical analyser"
   s.author            = "Michael Baldry"
   s.email             = "michael.baldry@uswitch.com"
@@ -32,7 +32,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options      = %w(--main README.md)
 
   # Add any extra files to include in the gem
-  s.files             = %w(lexr.rb README.md) + Dir.glob("{spec,lib/**/*}")
+  s.files             = %w(README.md) + Dir.glob("{spec,lib/**/*}")
   s.require_paths     = ["lib"]
 
   # If your tests use any gems, include them here

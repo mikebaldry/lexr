@@ -47,4 +47,4 @@ if you added a % in there somewhere, you'd get a Lexr::UnmatchableTextError with
 
 	=> Unexpected character '%' at position 5
 	
-and that pretty is every feature so far. Please let me know of any bugs or additions that you'd like to see!
+and that is pretty much every feature so far. Please let me know of any bugs or additions that you'd like to see!
