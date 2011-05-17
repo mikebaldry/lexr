@@ -14,11 +14,10 @@ class Lexr
 	def next
 		return @current = Lexr::Token.end if @position >= @text.length
 		@rules.each do |rule|
-			if result = rule.pattern.instance_of?(Regexp) ? regexp_match(rule.pattern) : literal_match(rule.pattern)
-				result = rule.converter[result] if rule.converter
-				return self.send :next if rule.ignore?
-				return @current = Lexr::Token.new(result, rule.symbol)
-			end
+		  next unless result = rule.match(unprocessed_text)
+		  @position += result.characters_matched
+		  return self.next if rule.ignore?
+		  return @current = result.token
 		end
 		raise Lexr::UnmatchableTextError.new(unprocessed_text[0..0], @position)
 	end
@@ -44,18 +43,6 @@ class Lexr
 	
 	def unprocessed_text
 		@text[@position..-1]
-	end
-	
-	def regexp_match(regex)
-		return nil unless m = unprocessed_text.match(/^#{regex}/)
-		@position += m.end(0)
-		m[0]
-	end
-	
-	def literal_match(lit)
-		return nil unless unprocessed_text[0..lit.length-1] == lit
-		@position += lit.length
-		lit
 	end
 	
 	class Token
@@ -87,6 +74,13 @@ class Lexr
 		def initialize(pattern, symbol, opts = {})
 			@pattern, @symbol, @opts = pattern, symbol, opts
 		end
+	  
+	  def match(text)
+	    text_matched = self.send :"#{pattern.class.name.downcase}_matcher", text
+	    return nil unless text_matched
+	    value = converter ? converter[text_matched] : text_matched
+	    Lexr::MatchData.new(text_matched.length, Lexr::Token.new(value, symbol))
+    end
 		
 		def ==(other)
 			@pattern == other.pattern && 
@@ -94,6 +88,18 @@ class Lexr
 				@opts[:convert_with] == other.converter && 
 				@opts[:ignore] == other.ignore?
 		end
+		
+		private
+		
+		def string_matcher(text)
+		  return nil unless text[0..pattern.length-1] == pattern
+      pattern
+	  end
+	  
+	  def regexp_matcher(text)
+	    return nil unless m = text.match(/^#{pattern}/)
+		  m[0]
+    end
 	end
 	
 	class Dsl
@@ -132,4 +138,13 @@ class Lexr
 			message
 		end
 	end
+	
+	class MatchData
+	  attr_reader :characters_matched, :token
+	  
+	  def initialize(characters_matched, token)
+	    @characters_matched = characters_matched
+	    @token = token
+    end
+  end
 end
