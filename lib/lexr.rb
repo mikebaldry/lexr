@@ -97,7 +97,7 @@ class Lexr
 	  end
 	  
 	  def regexp_matcher(text)
-	    return nil unless m = text.match(/^#{pattern}/)
+	    return nil unless m = text.match(/\A#{pattern}/)
 		  m[0]
     end
 	end

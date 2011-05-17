@@ -83,6 +83,30 @@ describe "Getting the next token" do
 		subject = Lexr.new(":1", [Lexr::Rule.new("1", :an_a)])
 		lambda { subject.next }.should raise_error(Lexr::UnmatchableTextError, "Unexpected character ':' at position 1")
 	end
+
+	it "should work correctly with multiline tokens inverse test" do
+	  subject = Lexr.new("this-and-that-and-this-and-that", [Lexr::Rule.new(/this-and-that/, :this_and_that),
+	                                                               Lexr::Rule.new("-and-", :and)])
+	  subject.next.should == Lexr::Token.this_and_that("this-and-that")
+	  subject.next.should == Lexr::Token.and("-and-")
+	  subject.next.should == Lexr::Token.this_and_that("this-and-that")
+  end
+	
+	it "should work correctly with multiline string tokens" do
+	  subject = Lexr.new("this\nand\nthat\nand\nthis\nand\nthat", [Lexr::Rule.new("this\nand\nthat", :this_and_that),
+	                                                               Lexr::Rule.new("\nand\n", :and)])
+	  subject.next.should == Lexr::Token.this_and_that("this\nand\nthat")
+	  subject.next.should == Lexr::Token.and("\nand\n")
+	  subject.next.should == Lexr::Token.this_and_that("this\nand\nthat")
+  end
+  
+  it "should work correctly with multiline regex tokens" do
+	  subject = Lexr.new("this\nand\nthat\nand\nthis\nand\nthat", [Lexr::Rule.new(/this\nand\nthat/, :this_and_that),
+	                                                               Lexr::Rule.new("\nand\n", :and)])
+	  subject.next.should == Lexr::Token.this_and_that("this\nand\nthat")
+	  subject.next.should == Lexr::Token.and("\nand\n")
+	  subject.next.should == Lexr::Token.this_and_that("this\nand\nthat")
+  end
 end
 
 describe "A pretty dsl" do
