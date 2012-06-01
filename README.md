@@ -15,11 +15,11 @@ Install with
 		ignores /\s+/ => :whitespace
 		
 		legal_place_for_binary_operator = lambda { |prev| [:addition, 
-																											:subtraction, 
-																											:multiplication, 
-																											:division,
-																											:left_parenthesis,
-																											:start].include? prev.type }
+																:subtraction, 
+																:multiplication, 
+																:division,
+																:left_parenthesis,
+																:start].include? prev.type }
 		
 		matches "+" => :addition, :unless => legal_place_for_binary_operator
 		matches "-" => :subtraction, :unless => legal_place_for_binary_operator
