@@ -13,16 +13,26 @@ Install with
 
 	ExpressionLexer = Lexr.that {
 		ignores /\s+/ => :whitespace
-		matches /[-+]?[0-9]*\.?[0-9]+/ => :number, :convert_with => lambda { |v| Float(v) }
-		matches "+" => :addition
-		matches "-" => :subtraction
-		matches "*" => :multiplication
-		matches "/" => :division
+		
+		legal_place_for_binary_operator = lambda { |prev| [:addition, 
+																											:subtraction, 
+																											:multiplication, 
+																											:division,
+																											:left_parenthesis,
+																											:start].include? prev.type }
+		
+		matches "+" => :addition, :unless => legal_place_for_binary_operator
+		matches "-" => :subtraction, :unless => legal_place_for_binary_operator
+		matches "*" => :multiplication, :unless => legal_place_for_binary_operator
+		matches "/" => :division, :unless => legal_place_for_binary_operator
+		
 		matches "(" => :left_parenthesis
 		matches ")" => :right_parenthesis
+		
+		matches /[-+]?[0-9]*\.?[0-9]+/ => :number, :convert_with => lambda { |v| Float(v) }
 	}
 
-	lexer = ExpressionLexer.new("1 * 12.5 / (55 + 2 - 56)")
+	lexer = ExpressionLexer.new("-1 * 12.5 / (55 + 2 - -56)")
 
 	until lexer.end?
 		puts lexer.next
@@ -30,7 +40,7 @@ Install with
 
 results in an output of
 
-	number(1.0)
+	number(-1.0)
 	multiplication(*)
 	number(12.5)
 	division(/)
@@ -39,7 +49,7 @@ results in an output of
 	addition(+)
 	number(2.0)
 	subtraction(-)
-	number(56.0)
+	number(-56.0)
 	right_parenthesis())
 	end()
 	

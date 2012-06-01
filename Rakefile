@@ -21,7 +21,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "lexr"
-  s.version           = "0.2.2"
+  s.version           = "0.3.0"
   s.summary           = "A lightweight and pretty lexical analyser"
   s.author            = "Michael Baldry"
   s.email             = "michael.baldry@uswitch.com"
