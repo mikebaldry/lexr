@@ -2,16 +2,6 @@ require "rubygems"
 require "rubygems/package_task"
 require "rdoc/task"
 
-require "spec"
-require "spec/rake/spectask"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_opts = %w(--format specdoc --colour)
-  t.libs = ["spec"]
-end
-
-
-task :default => ["spec"]
-
 # This builds the actual gem. For details of what all these options
 # mean, and other ones you can add, check the documentation here:
 #
@@ -21,11 +11,11 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "lexr"
-  s.version           = "0.3.1"
+  s.version           = "0.4.0"
   s.summary           = "A lightweight and pretty lexical analyser"
   s.author            = "Michael Baldry"
-  s.email             = "michael@brightbits.co.uk"
-  s.homepage          = "http://www.brightbits.co.uk"
+  s.email             = "mikeyb@buyapowa.com"
+  s.homepage          = "http://tech.buyapowa.com"
 
   s.has_rdoc          = true
   s.extra_rdoc_files  = %w(README.md)
@@ -44,7 +34,7 @@ end
 # be automatically building a gem for this project. If you're not
 # using GitHub, edit as appropriate.
 #
-# To publish your gem online, install the 'gemcutter' gem; Read more 
+# To publish your gem online, install the 'gemcutter' gem; Read more
 # about that here: http://gemcutter.org/pages/gem_docs
 Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
